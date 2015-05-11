@@ -4,9 +4,7 @@ function init() {
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
 
-  //getLocation();
-  drawGlobie();  
-  //if you run drawGlobie() instead of getLocation() [skipping the whole bg render process], saveImage() function runs completely.  so i think the bug has something to do with the way the bg is being drawn. 
+  getLocation();
 } 
 function saveImage() {
 	console.log('in saveImage function');
@@ -48,11 +46,22 @@ function jsonFlickrApi (response) {
 
 	console.log(flickrUrl);
 
-	$('body').append('<img id="bg" src="' + flickrUrl + '">');
+	$.ajax({
+		type: "POST",
+		url: "saveImage.php",
+		data: {image: flickrUrl},
+		success: function() {
+			console.log("image saved");
+			$('body').append('<img id="bg" src="bg.jpg">');
 
-	$('#bg').load(function() {
-		drawBg();
-	})
+			$('#bg').load(function() {
+				drawBg();
+			})
+		},
+		error: function(response) {
+			console.log(response);
+		}
+	});
 }
 function getFlickr(lat, lon) {
 	$.ajax({
@@ -84,3 +93,6 @@ function getLocation() {
 	  }
 	});
 }
+$(function(){ 
+	init();
+});
