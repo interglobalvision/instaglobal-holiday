@@ -12,7 +12,7 @@ var canvas,
 	bgHeight,
 	bg,
 	$bg,
-	deg = Math.random() * (-0.3 - 0.3) + 0.3;
+	deg = Math.random() * (-0.2 - 0.2) + 0.2;
 
  
 
@@ -39,7 +39,7 @@ function saveImage() {
 			data: {image: canvasData},
 			success: function(response) {
 				console.log("filename" + response);
-				postToInsta(response);
+				//postToInsta(response);
 			},
 			error: function(response) {
 				console.log(response);
@@ -54,7 +54,7 @@ function drawGlobie(deg) {
 	var globie = document.getElementById("globie");
 
   ctx.rotate(deg);
-  ctx.drawImage(globie, 0, 200, 700, 700);
+  ctx.drawImage(globie, 0, 500, 900, 900);
 
   saveImage();
 }
@@ -62,7 +62,7 @@ function drawGlobie(deg) {
 function drawBg() {
 	bg = document.getElementById("bg");
 
-	ctx.drawImage(bg, 0, 0, 600, 600, 0, 0, 600, 600);
+	ctx.drawImage(bg, 0, 0, 500, 500, 0, 0, 1024, 1024);
 
 	drawGlobie(deg);
 }
