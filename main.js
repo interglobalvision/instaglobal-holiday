@@ -1,11 +1,24 @@
-var canvas, ctx;
-var deg = Math.random() * (-0.3 - 0.3) + 0.3;
+var canvas, 
+	ctx, 
+	flickrPhotos, 
+	flickrRand, 
+	flickrUrl, 
+	unescoData, 
+	unescoRand, 
+	lat, 
+	lon, 
+	place,
+	bgWidth,
+	bgHeight,
+	deg = Math.random() * (-0.3 - 0.3) + 0.3;
+
 function init() {
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
 
   getLocation();
 } 
+
 function saveImage() {
 	console.log('in saveImage function');
 	var canvasData = canvas.toDataURL("image/png"); 
@@ -20,10 +33,13 @@ function saveImage() {
 			},
 			error: function(response) {
 				console.log(response);
+				resetVariables();
+				getLocation();
 			}
 		});
 	}
 }
+
 function drawGlobie(deg) {
 	var globie = document.getElementById("globie");
 
@@ -32,6 +48,7 @@ function drawGlobie(deg) {
 
   saveImage();
 }
+
 function drawBg() {
 	var bg = document.getElementById("bg");
 
@@ -39,30 +56,54 @@ function drawBg() {
 
 	drawGlobie(deg);
 }
+
 function jsonFlickrApi (response) {
 	var flickrPhotos = response.photos.photo;
-	var flickrObj = Math.floor(Math.random() * (flickrPhotos.length + 1)); 
-	var flickrUrl = flickrPhotos[flickrObj]['url_l'];
+	var flickrRand = Math.floor(Math.random() * (flickrPhotos.length + 1)); 
 
-	console.log(flickrUrl);
-
-	$.ajax({
-		type: "POST",
-		url: "saveImage.php",
-		data: {image: flickrUrl},
-		success: function() {
-			console.log("image saved");
-			$('body').append('<img id="bg" src="bg.jpg">');
-
-			$('#bg').load(function() {
-				drawBg();
-			})
-		},
-		error: function(response) {
-			console.log(response);
+	if (flickrPhotos[flickrRand] !== undefined) {
+		var flickrUrl = flickrPhotos[flickrRand]['url_l'];
+		if (flickrUrl !== undefined) {
+			console.log(flickrUrl);
+			$.ajax({
+				type: "POST",
+				url: "saveImage.php",
+				data: {image: flickrUrl},
+				success: function() {
+					console.log("bg saved");
+					$('body').append('<img id="bg" src="bg.jpg">');
+					$('#bg').load(function() {
+						/*bgWidth = $('#bg').width();
+						bgHeight = $('#bg').height();
+						console.log('width ' + bgWidth);
+						console.log('height ' + bgHeight);
+						if (bgWidth >= 600 && bgHeight >= 600) {
+							drawBg();
+						} else {
+							console.log('too small');
+							$('#bg').remove();
+							getLocation();
+						}*/
+						drawBg();
+					});
+				},
+				error: function(response) {
+					console.log(response);
+				}
+			});
+		} else { // flickrUrl == undefined
+			console.log('flickrUrl undefined');
+			resetVariables();
+			getLocation();
 		}
-	});
+	} else { // flickrPhotos[flickrRand] == undefined
+		console.log('flickrPhotos[flickrRand] undefined');
+		resetVariables();
+		getLocation();
+	}
+
 }
+
 function getFlickr(lat, lon) {
 	$.ajax({
 		url: 'https://api.flickr.com/services/rest/?' + 
@@ -70,29 +111,44 @@ function getFlickr(lat, lon) {
 		'&api_key=9d836eb4572899e19c64492f195b8784' + 
 		'&lat=' + lat + 
 		'&lon=' + lon + 
-		'&extras=url_l' + 
+		'&extras=url_l' + // image size
 		'&format=json',
 		dataType: 'jsonp',
 	  type: 'GET',
 	});
 }
+
 function getLocation() {
 	$.ajax({
 		url: 'unesco.json',
 		dataType: 'json',
 	  type: 'GET',
 	  success: function(data) {
-	  	var unescoData = data.QUERYRESULT.DATA;
-	  	var unescoObj = Math.floor(Math.random() * (unescoData.length + 1));
-	  	var lat = unescoData[unescoObj][0];
-	  	var lon = unescoData[unescoObj][1];
-	  	var place = unescoData[unescoObj][5];
+	  	unescoData = data.QUERYRESULT.DATA;
+	  	unescoRand = Math.floor(Math.random() * (unescoData.length + 1));
+	  	lat = unescoData[unescoRand][0];
+	  	lon = unescoData[unescoRand][1];
+	  	place = unescoData[unescoRand][5];
 
 	  	console.log('Globie visits ' + place);
 	  	getFlickr(lat, lon);
 	  }
 	});
 }
+
+function resetVariables() {
+	flickrPhotos = undefined;
+	flickrRand = undefined;
+	flickrUrl = undefined;
+	unescoData = undefined;
+	unescoRand = undefined;
+	lat = undefined;
+	lon = undefined;
+	place = undefined;
+	bgWidth = undefined;
+	bgHeight = undefined;
+}
+
 $(function(){ 
 	init();
 });
