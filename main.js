@@ -10,6 +10,9 @@ var canvas,
 	place,
 	bgWidth,
 	bgHeight,
+	randId,
+	bg,
+	$bg,
 	deg = Math.random() * (-0.3 - 0.3) + 0.3;
 
 function init() {
@@ -20,9 +23,7 @@ function init() {
 } 
 
 function saveImage() {
-	console.log('in saveImage function');
 	var canvasData = canvas.toDataURL("image/png"); 
-	console.log('canvasData has data');
 	if (canvasData) {
 		$.ajax({
 			type: "POST",
@@ -50,7 +51,7 @@ function drawGlobie(deg) {
 }
 
 function drawBg() {
-	var bg = document.getElementById("bg");
+	bg = document.getElementById("bg");
 
 	ctx.drawImage(bg, 0, 0, 600, 600, 0, 0, 600, 600);
 
@@ -72,19 +73,24 @@ function jsonFlickrApi (response) {
 				success: function() {
 					console.log("bg saved");
 					$('body').append('<img id="bg" src="bg.jpg">');
-					$('#bg').load(function() {
-						/*bgWidth = $('#bg').width();
+					
+					$bg = $('#bg');
+
+					$bg.load(function() {
+						bgWidth = $('#bg').width();
 						bgHeight = $('#bg').height();
 						console.log('width ' + bgWidth);
 						console.log('height ' + bgHeight);
+						
 						if (bgWidth >= 600 && bgHeight >= 600) {
 							drawBg();
 						} else {
 							console.log('too small');
 							$('#bg').remove();
+							resetVariables();
 							getLocation();
-						}*/
-						drawBg();
+						}
+
 					});
 				},
 				error: function(response) {
@@ -147,6 +153,9 @@ function resetVariables() {
 	place = undefined;
 	bgWidth = undefined;
 	bgHeight = undefined;
+	randId = undefined;
+	$bg = null;
+	bg = null;
 }
 
 $(function(){ 
