@@ -10,7 +10,6 @@ var canvas,
 	place,
 	bgWidth,
 	bgHeight,
-	randId,
 	bg,
 	$bg,
 	deg = Math.random() * (-0.3 - 0.3) + 0.3;
@@ -151,9 +150,8 @@ function resetVariables() {
 	lat = undefined;
 	lon = undefined;
 	place = undefined;
-	bgWidth = undefined;
-	bgHeight = undefined;
-	randId = undefined;
+	bgWidth = null;
+	bgHeight = null;
 	$bg = null;
 	bg = null;
 }
