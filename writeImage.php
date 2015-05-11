@@ -12,9 +12,13 @@ if (isset($_POST['image'])) {
 
 	// Save file. This example uses a hard coded filename for testing,
 	// but a real application can specify filename in POST variable
-	$fp = fopen( 'img/' . time() . '.png', 'wb' );
+	$filename = time() . '.jpg';
+	$fp = fopen( 'img/' . $filename, 'wb' );
 	fwrite( $fp, $unencodedData);
 	fclose( $fp );
+
+	echo $filename;
+
 } else {
 	echo 'post data empty';
 }
