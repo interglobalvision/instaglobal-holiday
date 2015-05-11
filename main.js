@@ -39,7 +39,7 @@ function saveImage() {
 			data: {image: canvasData},
 			success: function(response) {
 				console.log("filename" + response);
-				//postToInsta(response);
+				postToInsta(response);
 			},
 			error: function(response) {
 				console.log(response);
