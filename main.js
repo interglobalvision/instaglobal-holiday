@@ -14,22 +14,32 @@ var canvas,
 	$bg,
 	deg = Math.random() * (-0.3 - 0.3) + 0.3;
 
-function init() {
-  canvas = document.getElementById("canvas");
-  ctx = canvas.getContext("2d");
+ 
 
-  getLocation();
-} 
+function postToInsta(filename) {
+	$.ajax({
+		type: "POST",
+		url: "postToInsta.php",
+		data: {filename: filename, caption: caption},
+		success: function(response) {
+			console.log('image posted ' + response);
+		},
+		error: function(response) {
+			console.log('instagram error ' + response);
+		}
+	});
+}
 
 function saveImage() {
-	var canvasData = canvas.toDataURL("image/png"); 
+	var canvasData = canvas.toDataURL("image/jpg"); 
 	if (canvasData) {
 		$.ajax({
 			type: "POST",
 			url: "writeImage.php",
 			data: {image: canvasData},
-			success: function() {
-				console.log("image saved");
+			success: function(response) {
+				console.log("filename" + response);
+				postToInsta(response);
 			},
 			error: function(response) {
 				console.log(response);
@@ -134,8 +144,9 @@ function getLocation() {
 	  	lat = unescoData[unescoRand][0];
 	  	lon = unescoData[unescoRand][1];
 	  	place = unescoData[unescoRand][5];
+	  	caption = 'Globie visits ' + place;
 
-	  	console.log('Globie visits ' + place);
+	  	console.log(caption);
 	  	getFlickr(lat, lon);
 	  }
 	});
@@ -154,6 +165,13 @@ function resetVariables() {
 	bgHeight = null;
 	$bg = null;
 	bg = null;
+}
+
+function init() {
+  canvas = document.getElementById("canvas");
+  ctx = canvas.getContext("2d");
+
+  getLocation();
 }
 
 $(function(){ 
