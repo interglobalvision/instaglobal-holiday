@@ -54,7 +54,7 @@ function drawGlobie(deg) {
 	var globie = document.getElementById("globie");
 
   ctx.rotate(deg);
-  ctx.drawImage(globie, 0, 500, 900, 900);
+  ctx.drawImage(globie, 0, 300, 600, 600);
 
   saveImage();
 }
@@ -62,7 +62,7 @@ function drawGlobie(deg) {
 function drawBg() {
 	bg = document.getElementById("bg");
 
-	ctx.drawImage(bg, 0, 0, 500, 500, 0, 0, 1024, 1024);
+	ctx.drawImage(bg, 0, 0, 500, 500, 0, 0, 600, 600);
 
 	drawGlobie(deg);
 }
@@ -123,7 +123,7 @@ function getFlickr(lat, lon) {
 	$.ajax({
 		url: 'https://api.flickr.com/services/rest/?' + 
 		'method=flickr.photos.search' + 
-		'&api_key=9d836eb4572899e19c64492f195b8784' + 
+		'&api_key=731a3dc1069a15969d725a3805acc530' + 
 		'&lat=' + lat + 
 		'&lon=' + lon + 
 		'&extras=url_l' + // image size
@@ -145,6 +145,8 @@ function getLocation() {
 	  	lon = unescoData[unescoRand][1];
 	  	place = unescoData[unescoRand][5];
 	  	caption = 'Globie visits ' + place;
+
+	  	$('#caption').html(caption);
 
 	  	console.log(caption);
 	  	getFlickr(lat, lon);
