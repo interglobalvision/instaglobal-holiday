@@ -1,12 +1,33 @@
 <html>
 <head>
+	<meta http-equiv="refresh" content="60">
 	<title>Globie on Holiday</title>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<script type="text/javascript" src="main.js"></script>
-	<style>img {display: none;}</style>
+	<style>
+	img {display: none;} 
+	#caption{
+		font-size: 24px; 
+		font-family: sans-serif; 
+		font-weight: 700; 
+		width: 600px;
+		margin-bottom: 12px;
+		text-align: center;
+	}
+	.container {
+		position: absolute;
+		width: 600px;
+		left: 50%;
+		margin-left: -300px;
+	}
+	</style>
 </head>
 <body>
-	<canvas id="canvas" height="1024" width="1024"></canvas>
-	<img id="globie" src="globie.png">
+	<div class="container">
+		<div id="caption"></div>
+		<canvas id="canvas" height="600" width="600"></canvas>
+		<img id="globie" src="globie.png">
+	</div>
+	
 </body>
 </html>
