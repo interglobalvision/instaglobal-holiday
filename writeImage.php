@@ -8,15 +8,19 @@ if (isset($_POST['image'])) {
 	$filteredData=substr($imageData, strpos($imageData, ",")+1);
 
 	// Need to decode before saving since the data we received is already base64 encoded
-	$unencodedData=base64_decode($filteredData);
+	$decodedData=base64_decode($filteredData);
+
+  // Create image with Imagemagick
+  $im = new Imagick();
+  $im->readimageblob($decodedData);
+  $im->setImageFormat('jpeg');
+  $im->setImageCompressionQuality(100);
 
 	// Save file. This example uses a hard coded filename for testing,
 	// but a real application can specify filename in POST variable
 	$filename = time() . '.jpg';
-	$fp = fopen( 'img/' . $filename, 'wb' );
-	fwrite( $fp, $unencodedData);
-	fclose( $fp );
 
+  $im->writeImage('img/' . $filename); // . $filename);
 	echo $filename;
 
 } else {
