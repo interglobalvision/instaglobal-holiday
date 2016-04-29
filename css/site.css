@@ -1278,6 +1278,10 @@ img {
   max-width: 100%;
   height: auto;
 }
+#globie,
+#generator {
+  display: none;
+}
 @media screen and (max-width: 601px) {
   .container {
     width: 96%;

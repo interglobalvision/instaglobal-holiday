@@ -7,6 +7,8 @@ Generator = {
   lat: undefined,
   lon: undefined,
   place: undefined,
+  width: 1000,
+  height: 1000,
   deg: Math.random() * (-0.3 - 0.3) + 0.3,
 
   init: function() {
@@ -79,24 +81,54 @@ Generator = {
       var flickrObj = Math.floor(Math.random() * (flickrPhotos.length + 1));
       var flickrUrl = flickrPhotos[flickrObj]['url_l'];
 
-      $('body').append('<img id="bg" src="' + flickrUrl + '">');
+      _this.urlToData(flickrUrl, function(data) {
+        _this.drawBackground(data);
+      });
 
-      _this.bg = document.getElementById('bg');
-      _this.bg.onload = function() {
-        console.log('background loaded');
-        _this.drawBg();
-      };
     } else {
       _this.getFlickr();
     }
 
   },
 
-  drawBg: function() {
+  drawBackground: function(data) {
     var _this = this;
+    var img = new Image();
 
-    _this.ctx.drawImage(_this.bg, 0, 0, 600, 600, 0, 0, 1000, 1000);
-    _this.drawGlobie(_this.deg);
+    img.onload = function() {
+      var height = img.naturalHeight;
+      var width = img.naturalWidth;
+      var multiplier;
+      var offset;
+
+      if (height === width) {
+
+        // handle square image
+        multiplier = _this.height / height;
+        _this.ctx.drawImage(img, 0, 0, (width * multiplier), (height * multiplier));
+
+      } else if (height > width) {
+
+        // handle portrait
+        multiplier = _this.width / width;
+        offset = (((height * multiplier)-_this.height) / 2);
+
+        _this.ctx.drawImage(img, 0, -offset, (width * multiplier), (height * multiplier));
+
+      } else {
+
+        // handle landscape
+        multiplier = _this.height / height;
+        offset = (((width * multiplier)-_this.width) / 2);
+
+        _this.ctx.drawImage(img, -offset, 0, (width * multiplier), (height * multiplier));
+
+      }
+
+      _this.drawGlobie(_this.deg);
+
+    };
+    img.src = data;
 
   },
 
@@ -105,7 +137,7 @@ Generator = {
     var globie = document.getElementById('globie');
 
     _this.ctx.rotate(_this.deg);
-    _this.ctx.drawImage(globie, 0, 200, 700, 700);
+    _this.ctx.drawImage(globie, 0, 500, 850, 850);
 
     $('#caption').html('Globie visits ' + _this.place);
 
@@ -115,11 +147,9 @@ Generator = {
 
   saveImage: function() {
     var _this = this;
-
-/*
     var canvasData = _this.canvas.toDataURL('image/png');
-    console.log('canvasData has data. You need to save this into an img element');
-*/
+
+    document.getElementById('output').src = canvasData;
 
   },
 
@@ -128,7 +158,7 @@ Generator = {
 
     img.crossOrigin = 'Anonymous';
     img.onload = function(){
-      var canvas = document.createElement('converter');
+      var canvas = document.createElement('CANVAS');
       var ctx = canvas.getContext('2d');
       var dataURL;
 
